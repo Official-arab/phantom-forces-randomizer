@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Phantom Forces Loadout Randomizer</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="control-panel" aria-labelledby="app-title">
+        <div>
+          <p class="eyebrow">Phantom Forces</p>
+          <h1 id="app-title">Loadout Randomizer</h1>
+        </div>
+
+        <form id="randomizer-form" class="rank-form">
+          <label for="rank">Your rank</label>
+          <div class="input-row">
+            <input id="rank" name="rank" type="number" min="0" max="999" value="0" inputmode="numeric">
+            <button type="submit">Randomize</button>
+          </div>
+        </form>
+
+        <div class="options" aria-label="Randomizer options">
+          <label class="check-option">
+            <input id="include-locked" type="checkbox">
+            <span>Include guns above my rank</span>
+          </label>
+          <label class="check-option">
+            <input id="class-match" type="checkbox">
+            <span>Pick a matching primary class</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="results" aria-live="polite">
+        <article class="weapon-card primary-card">
+          <p class="card-label">Primary</p>
+          <h2 id="primary-name">AK-12</h2>
+          <p id="primary-meta">Assault Rifle - Rank 0</p>
+        </article>
+
+        <article class="weapon-card secondary-card">
+          <p class="card-label">Secondary</p>
+          <h2 id="secondary-name">M9</h2>
+          <p id="secondary-meta">Pistol - Rank 0</p>
+        </article>
+      </section>
+
+      <section class="stats-panel">
+        <div>
+          <span id="primary-count">0</span>
+          <p>available primaries</p>
+        </div>
+        <div>
+          <span id="secondary-count">0</span>
+          <p>available secondaries</p>
+        </div>
+        <div>
+          <span id="rank-note">Rank 0</span>
+          <p>current pool</p>
+        </div>
+      </section>
+
+      <section class="pool-panel" aria-labelledby="pool-title">
+        <div class="pool-heading">
+          <h2 id="pool-title">Available Pool</h2>
+          <button id="copy-loadout" type="button">Copy Loadout</button>
+        </div>
+        <div id="weapon-pool" class="weapon-pool"></div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
