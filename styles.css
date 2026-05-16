@@ -180,6 +180,10 @@ button:hover {
   background: linear-gradient(135deg, rgba(102, 211, 158, 0.18), rgba(21, 27, 35, 0.9));
 }
 
+.grenade-card {
+  background: linear-gradient(135deg, rgba(255, 123, 114, 0.18), rgba(21, 27, 35, 0.9));
+}
+
 .weapon-card h2 {
   max-width: 760px;
   margin: auto 0 10px;
@@ -197,7 +201,7 @@ button:hover {
 
 .stats-panel {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   margin-top: 16px;
   overflow: hidden;

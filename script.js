@@ -91,6 +91,17 @@ const secondaries = [
   ["SASS 308", 132, "Other"], ["THUNDER", 190, "Other"]
 ].map(toWeapon);
 
+const grenades = [
+  ["M67 FRAG", 0, "Fragmentation"], ["MK 2 FRAG", 2, "Fragmentation"], ["M24 STICK", 24, "Fragmentation"],
+  ["M26 FRAG", 26, "Fragmentation"], ["M560 MINI", 56, "Fragmentation"], ["V40 MINI", 140, "Fragmentation"],
+  ["ROLY HG", 300, "Fragmentation"],
+
+  ["DYNAMITE", 0, "High Explosive"], ["DYNAMITE-3", 0, "High Explosive"], ["RGD-5 HE", 54, "High Explosive"],
+  ["SEMTEX", 69, "High Explosive"], ["PB GRENADE", 135, "High Explosive"], ["BUNDLE CHARGE", 168, "High Explosive"],
+
+  ["T-13 IMPACT", 80, "Impact"], ["RGN UDZS", 80, "Impact"], ["RGO UDZS", 114, "Impact"]
+].map(toWeapon);
+
 const primaryByClass = {
   Assault: ["Assault Rifle", "Battle Rifle", "Shotgun"],
   Scout: ["PDW", "Carbine", "Shotgun"],
@@ -106,13 +117,16 @@ const primaryName = document.querySelector("#primary-name");
 const primaryMeta = document.querySelector("#primary-meta");
 const secondaryName = document.querySelector("#secondary-name");
 const secondaryMeta = document.querySelector("#secondary-meta");
+const grenadeName = document.querySelector("#grenade-name");
+const grenadeMeta = document.querySelector("#grenade-meta");
 const primaryCount = document.querySelector("#primary-count");
 const secondaryCount = document.querySelector("#secondary-count");
+const grenadeCount = document.querySelector("#grenade-count");
 const rankNote = document.querySelector("#rank-note");
 const weaponPool = document.querySelector("#weapon-pool");
 const copyButton = document.querySelector("#copy-loadout");
 
-let currentLoadout = { primary: primaries[0], secondary: secondaries[0], className: "" };
+let currentLoadout = { primary: primaries[0], secondary: secondaries[0], grenade: grenades[0], className: "" };
 
 function toWeapon([name, rank, category, unlockLabel]) {
   return { name, rank, category, unlockLabel };
@@ -139,6 +153,7 @@ function randomize(event) {
 
   const rank = getRank();
   const secondaryPool = getAvailable(secondaries, rank);
+  const grenadePool = getAvailable(grenades, rank);
   let primaryPool = getAvailable(primaries, rank);
   let className = "";
 
@@ -150,6 +165,7 @@ function randomize(event) {
   currentLoadout = {
     primary: randomItem(primaryPool),
     secondary: randomItem(secondaryPool),
+    grenade: randomItem(grenadePool),
     className
   };
 
@@ -159,15 +175,19 @@ function randomize(event) {
 function render(rank = getRank()) {
   const primaryPool = getAvailable(primaries, rank);
   const secondaryPool = getAvailable(secondaries, rank);
-  const visiblePool = [...primaryPool, ...secondaryPool].sort((a, b) => a.rank - b.rank || a.name.localeCompare(b.name));
+  const grenadePool = getAvailable(grenades, rank);
+  const visiblePool = [...primaryPool, ...secondaryPool, ...grenadePool].sort((a, b) => a.rank - b.rank || a.name.localeCompare(b.name));
 
   primaryName.textContent = currentLoadout.primary.name;
   primaryMeta.textContent = metaText(currentLoadout.primary, currentLoadout.className);
   secondaryName.textContent = currentLoadout.secondary.name;
   secondaryMeta.textContent = metaText(currentLoadout.secondary);
+  grenadeName.textContent = currentLoadout.grenade.name;
+  grenadeMeta.textContent = metaText(currentLoadout.grenade);
 
   primaryCount.textContent = primaryPool.length;
   secondaryCount.textContent = secondaryPool.length;
+  grenadeCount.textContent = grenadePool.length;
   rankNote.textContent = includeLocked.checked ? "All ranks" : `Rank ${rank}`;
 
   weaponPool.innerHTML = visiblePool
@@ -197,7 +217,8 @@ async function copyLoadout() {
     "Phantom Forces loadout",
     currentLoadout.className ? `Class: ${currentLoadout.className}` : null,
     `Primary: ${currentLoadout.primary.name} (${currentLoadout.primary.category}, ${unlockText(currentLoadout.primary).toLowerCase()})`,
-    `Secondary: ${currentLoadout.secondary.name} (${currentLoadout.secondary.category}, ${unlockText(currentLoadout.secondary).toLowerCase()})`
+    `Secondary: ${currentLoadout.secondary.name} (${currentLoadout.secondary.category}, ${unlockText(currentLoadout.secondary).toLowerCase()})`,
+    `Grenade: ${currentLoadout.grenade.name} (${currentLoadout.grenade.category}, ${unlockText(currentLoadout.grenade).toLowerCase()})`
   ].filter(Boolean).join("\n");
 
   try {
