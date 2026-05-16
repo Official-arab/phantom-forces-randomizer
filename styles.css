@@ -173,22 +173,45 @@ button:hover {
 }
 
 .primary-card {
-  background: linear-gradient(135deg, rgba(99, 179, 237, 0.2), rgba(21, 27, 35, 0.9));
+  border-color: rgba(99, 179, 237, 0.65);
+  background:
+    linear-gradient(135deg, rgba(99, 179, 237, 0.42), rgba(21, 27, 35, 0.84) 62%),
+    #111c28;
 }
 
 .secondary-card {
-  background: linear-gradient(135deg, rgba(102, 211, 158, 0.18), rgba(21, 27, 35, 0.9));
+  border-color: rgba(102, 211, 158, 0.65);
+  background:
+    linear-gradient(135deg, rgba(102, 211, 158, 0.42), rgba(21, 27, 35, 0.84) 62%),
+    #102018;
+}
+
+.primary-card .card-label {
+  color: #93d4ff;
+}
+
+.secondary-card .card-label {
+  color: #8ff0bc;
 }
 
 .grenade-card {
-  background: linear-gradient(135deg, rgba(255, 123, 114, 0.18), rgba(21, 27, 35, 0.9));
+  border-color: rgba(255, 123, 114, 0.65);
+  background:
+    linear-gradient(135deg, rgba(255, 123, 114, 0.42), rgba(21, 27, 35, 0.84) 62%),
+    #241416;
+}
+
+.grenade-card .card-label {
+  color: #ff9b92;
 }
 
 .weapon-card h2 {
   max-width: 760px;
   margin: auto 0 10px;
-  overflow-wrap: anywhere;
-  font-size: clamp(2.1rem, 7vw, 5.6rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(1.55rem, 6vw, 5.2rem);
   line-height: 0.95;
 }
 

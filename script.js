@@ -148,6 +148,20 @@ function randomItem(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
+function randomItemExcept(list, previous) {
+  if (!previous || list.length < 2) {
+    return randomItem(list);
+  }
+
+  let next = randomItem(list);
+
+  while (next.name === previous.name) {
+    next = randomItem(list);
+  }
+
+  return next;
+}
+
 function randomize(event) {
   event?.preventDefault();
 
@@ -163,9 +177,9 @@ function randomize(event) {
   }
 
   currentLoadout = {
-    primary: randomItem(primaryPool),
-    secondary: randomItem(secondaryPool),
-    grenade: randomItem(grenadePool),
+    primary: randomItemExcept(primaryPool, currentLoadout.primary),
+    secondary: randomItemExcept(secondaryPool, currentLoadout.secondary),
+    grenade: randomItemExcept(grenadePool, currentLoadout.grenade),
     className
   };
 
@@ -184,6 +198,7 @@ function render(rank = getRank()) {
   secondaryMeta.textContent = metaText(currentLoadout.secondary);
   grenadeName.textContent = currentLoadout.grenade.name;
   grenadeMeta.textContent = metaText(currentLoadout.grenade);
+  fitWeaponNames();
 
   primaryCount.textContent = primaryPool.length;
   secondaryCount.textContent = secondaryPool.length;
@@ -210,6 +225,16 @@ function metaText(weapon, className = "") {
 
 function unlockText(weapon) {
   return weapon.unlockLabel || `Rank ${weapon.rank}`;
+}
+
+function fitWeaponNames() {
+  [primaryName, secondaryName, grenadeName].forEach((element) => {
+    element.style.fontSize = "";
+
+    while (element.scrollWidth > element.clientWidth && parseFloat(getComputedStyle(element).fontSize) > 22) {
+      element.style.fontSize = `${parseFloat(getComputedStyle(element).fontSize) - 2}px`;
+    }
+  });
 }
 
 async function copyLoadout() {
