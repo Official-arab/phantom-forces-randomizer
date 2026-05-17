@@ -435,10 +435,23 @@ button:hover {
   opacity: 0.62;
 }
 
+.attachments-heading {
+  align-items: flex-start;
+}
+
 #attachments-note {
+  display: block;
+  margin-top: 5px;
   color: var(--muted);
   font-size: 0.9rem;
   font-weight: 800;
+}
+
+.attachment-controls {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .attachment-grid {
@@ -582,7 +595,8 @@ button:hover {
   }
 
   .hub-nav,
-  .browser-actions {
+  .browser-actions,
+  .attachment-controls {
     flex-direction: column;
   }
 

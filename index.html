@@ -39,18 +39,6 @@
             <input id="class-match" type="checkbox">
             <span>Pick a matching primary class</span>
           </label>
-          <label class="check-option">
-            <input id="include-attachments" type="checkbox">
-            <span>Randomize attachments</span>
-          </label>
-          <label class="kills-option" for="primary-kills">
-            <span>Primary kills</span>
-            <input id="primary-kills" name="primary-kills" type="text" value="0" inputmode="numeric">
-          </label>
-          <label class="kills-option" for="secondary-kills">
-            <span>Secondary kills</span>
-            <input id="secondary-kills" name="secondary-kills" type="text" value="0" inputmode="numeric">
-          </label>
         </div>
       </section>
 
@@ -74,6 +62,39 @@
         </article>
       </section>
 
+      <section id="attachments-panel" class="attachments-panel is-disabled page page-randomizer" aria-labelledby="attachments-title">
+        <div class="pool-heading attachments-heading">
+          <div>
+            <h2 id="attachments-title">Attachments</h2>
+            <span id="attachments-note">Off</span>
+          </div>
+          <div class="attachment-controls">
+            <label class="check-option">
+              <input id="include-attachments" type="checkbox">
+              <span>Randomize attachments</span>
+            </label>
+            <label class="kills-option" for="primary-kills">
+              <span>Primary kills</span>
+              <input id="primary-kills" name="primary-kills" type="text" value="0" inputmode="numeric">
+            </label>
+            <label class="kills-option" for="secondary-kills">
+              <span>Secondary kills</span>
+              <input id="secondary-kills" name="secondary-kills" type="text" value="0" inputmode="numeric">
+            </label>
+          </div>
+        </div>
+        <div class="attachment-grid">
+          <article class="attachment-group primary-attachments">
+            <h3>Primary Attachments</h3>
+            <div id="primary-attachments" class="attachment-list"></div>
+          </article>
+          <article class="attachment-group secondary-attachments">
+            <h3>Secondary Attachments</h3>
+            <div id="secondary-attachments" class="attachment-list"></div>
+          </article>
+        </div>
+      </section>
+
       <section class="stats-panel page page-randomizer">
         <div>
           <span id="primary-count">0</span>
@@ -90,23 +111,6 @@
         <div>
           <span id="rank-note">Rank 0</span>
           <p>current pool</p>
-        </div>
-      </section>
-
-      <section id="attachments-panel" class="attachments-panel is-disabled page page-randomizer" aria-labelledby="attachments-title">
-        <div class="pool-heading">
-          <h2 id="attachments-title">Attachments</h2>
-          <span id="attachments-note">Off</span>
-        </div>
-        <div class="attachment-grid">
-          <article class="attachment-group primary-attachments">
-            <h3>Primary Attachments</h3>
-            <div id="primary-attachments" class="attachment-list"></div>
-          </article>
-          <article class="attachment-group secondary-attachments">
-            <h3>Secondary Attachments</h3>
-            <div id="secondary-attachments" class="attachment-list"></div>
-          </article>
         </div>
       </section>
 
