@@ -37,10 +37,35 @@ input {
   padding: 36px 0;
 }
 
+.hub-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.nav-button {
+  background: rgba(31, 41, 55, 0.78);
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: 11px 14px;
+}
+
+.nav-button.is-active {
+  background: var(--accent);
+  color: #17120a;
+  border-color: transparent;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
 .control-panel,
 .stats-panel,
 .pool-panel,
-.weapon-card {
+.weapon-card,
+.browser-panel,
+.challenge-panel {
   border: 1px solid var(--line);
   background: rgba(21, 27, 35, 0.88);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
@@ -89,7 +114,7 @@ h1 {
 
 .input-row {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(90px, 1fr) repeat(3, auto);
   gap: 10px;
 }
 
@@ -125,6 +150,16 @@ button:hover {
   transform: translateY(-1px);
 }
 
+.secondary-action {
+  background: var(--panel-strong);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.secondary-action:hover {
+  background: #283545;
+}
+
 .options {
   grid-column: 1 / -1;
   display: flex;
@@ -138,6 +173,19 @@ button:hover {
   gap: 8px;
   color: var(--muted);
   font-weight: 700;
+}
+
+.kills-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.kills-option input {
+  width: 112px;
+  padding: 8px 10px;
 }
 
 .check-option input {
@@ -254,6 +302,213 @@ button:hover {
   border-radius: 8px;
 }
 
+.browser-panel,
+.challenge-panel {
+  border-radius: 8px;
+  padding: 22px;
+}
+
+.browser-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.browser-actions input,
+.browser-actions select {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0b0f15;
+  color: var(--text);
+  padding: 9px 12px;
+}
+
+.selection-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.selection-strip div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.52);
+  padding: 14px;
+}
+
+.selection-strip span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.selection-strip strong {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weapon-browser {
+  display: grid;
+  gap: 14px;
+}
+
+.weapon-category-group h3 {
+  margin: 0 0 8px;
+  color: var(--accent-strong);
+  font-size: 0.98rem;
+}
+
+.weapon-browser-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+  gap: 10px;
+}
+
+.weapon-select-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.6);
+  padding: 12px;
+}
+
+.weapon-select-card strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weapon-select-card span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.weapon-select-card button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px 10px;
+}
+
+.challenge-card {
+  min-height: 260px;
+  border: 1px solid rgba(229, 182, 75, 0.5);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(229, 182, 75, 0.34), rgba(21, 27, 35, 0.86) 62%),
+    #231d10;
+  padding: 26px;
+}
+
+.challenge-card h2 {
+  margin: 40px 0 14px;
+  font-size: clamp(2rem, 7vw, 5rem);
+  line-height: 0.95;
+}
+
+.challenge-card p:last-child {
+  max-width: 720px;
+  margin-bottom: 0;
+  color: var(--text);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.attachments-panel {
+  margin-top: 16px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(21, 27, 35, 0.88);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+}
+
+.attachments-panel.is-disabled {
+  opacity: 0.62;
+}
+
+#attachments-note {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.attachment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.attachment-group {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.52);
+  padding: 16px;
+}
+
+.primary-attachments {
+  border-color: rgba(99, 179, 237, 0.36);
+}
+
+.secondary-attachments {
+  border-color: rgba(102, 211, 158, 0.36);
+}
+
+.attachment-group h3 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+}
+
+.attachment-list {
+  display: grid;
+  gap: 8px;
+}
+
+.attachment-row {
+  display: grid;
+  grid-template-columns: 105px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  min-height: 38px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 8px;
+}
+
+.attachment-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.attachment-slot {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.attachment-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 900;
+}
+
+.attachment-unlock {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .pool-heading {
   display: flex;
   align-items: center;
@@ -312,7 +567,9 @@ button:hover {
 
   .control-panel,
   .results,
-  .stats-panel {
+  .stats-panel,
+  .attachment-grid,
+  .selection-strip {
     grid-template-columns: 1fr;
   }
 
@@ -322,6 +579,11 @@ button:hover {
 
   .input-row {
     grid-template-columns: 1fr;
+  }
+
+  .hub-nav,
+  .browser-actions {
+    flex-direction: column;
   }
 
   .weapon-card {

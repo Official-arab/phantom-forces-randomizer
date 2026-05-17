@@ -8,7 +8,13 @@
   </head>
   <body>
     <main class="app-shell">
-      <section class="control-panel" aria-labelledby="app-title">
+      <nav class="hub-nav" aria-label="Hub navigation">
+        <button class="nav-button is-active" type="button" data-page="randomizer">Randomizer</button>
+        <button class="nav-button" type="button" data-page="weapons">Weapons</button>
+        <button class="nav-button" type="button" data-page="challenges">Challenges</button>
+      </nav>
+
+      <section class="control-panel page page-randomizer" aria-labelledby="app-title">
         <div>
           <p class="eyebrow">Phantom Forces</p>
           <h1 id="app-title">Loadout Randomizer</h1>
@@ -18,7 +24,9 @@
           <label for="rank">Your rank</label>
           <div class="input-row">
             <input id="rank" name="rank" type="number" min="0" max="999" value="0" inputmode="numeric">
-            <button type="submit">Randomize</button>
+            <button id="randomize-all" type="submit">Randomize All</button>
+            <button id="randomize-weapons" class="secondary-action" type="button">Weapons Only</button>
+            <button id="randomize-attachments" class="secondary-action" type="button">Attachments Only</button>
           </div>
         </form>
 
@@ -31,10 +39,22 @@
             <input id="class-match" type="checkbox">
             <span>Pick a matching primary class</span>
           </label>
+          <label class="check-option">
+            <input id="include-attachments" type="checkbox">
+            <span>Randomize attachments</span>
+          </label>
+          <label class="kills-option" for="primary-kills">
+            <span>Primary kills</span>
+            <input id="primary-kills" name="primary-kills" type="text" value="0" inputmode="numeric">
+          </label>
+          <label class="kills-option" for="secondary-kills">
+            <span>Secondary kills</span>
+            <input id="secondary-kills" name="secondary-kills" type="text" value="0" inputmode="numeric">
+          </label>
         </div>
       </section>
 
-      <section class="results" aria-live="polite">
+      <section class="results page page-randomizer" aria-live="polite">
         <article class="weapon-card primary-card">
           <p class="card-label">Primary</p>
           <h2 id="primary-name">AK-12</h2>
@@ -54,7 +74,7 @@
         </article>
       </section>
 
-      <section class="stats-panel">
+      <section class="stats-panel page page-randomizer">
         <div>
           <span id="primary-count">0</span>
           <p>available primaries</p>
@@ -73,12 +93,68 @@
         </div>
       </section>
 
-      <section class="pool-panel" aria-labelledby="pool-title">
+      <section id="attachments-panel" class="attachments-panel is-disabled page page-randomizer" aria-labelledby="attachments-title">
+        <div class="pool-heading">
+          <h2 id="attachments-title">Attachments</h2>
+          <span id="attachments-note">Off</span>
+        </div>
+        <div class="attachment-grid">
+          <article class="attachment-group primary-attachments">
+            <h3>Primary Attachments</h3>
+            <div id="primary-attachments" class="attachment-list"></div>
+          </article>
+          <article class="attachment-group secondary-attachments">
+            <h3>Secondary Attachments</h3>
+            <div id="secondary-attachments" class="attachment-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="pool-panel page page-randomizer" aria-labelledby="pool-title">
         <div class="pool-heading">
           <h2 id="pool-title">Available Pool</h2>
           <button id="copy-loadout" type="button">Copy Loadout</button>
         </div>
         <div id="weapon-pool" class="weapon-pool"></div>
+      </section>
+
+      <section class="page page-weapons is-hidden">
+        <div class="browser-panel">
+          <div class="pool-heading">
+            <h2>Weapon Browser</h2>
+            <div class="browser-actions">
+              <input id="weapon-search" type="search" placeholder="Search weapons">
+              <select id="weapon-category">
+                <option value="All">All categories</option>
+              </select>
+            </div>
+          </div>
+          <div class="selection-strip">
+            <div>
+              <span>Selected primary</span>
+              <strong id="selected-primary">AK-12</strong>
+            </div>
+            <div>
+              <span>Selected secondary</span>
+              <strong id="selected-secondary">M9</strong>
+            </div>
+          </div>
+          <div id="weapon-browser" class="weapon-browser"></div>
+        </div>
+      </section>
+
+      <section class="page page-challenges is-hidden">
+        <div class="challenge-panel">
+          <div class="pool-heading">
+            <h2>Challenge Generator</h2>
+            <button id="random-challenge" type="button">New Challenge</button>
+          </div>
+          <article class="challenge-card">
+            <p id="challenge-type" class="card-label">Loadout</p>
+            <h2 id="challenge-title">Fresh Roll</h2>
+            <p id="challenge-text">Randomize a full loadout and use it for one complete match.</p>
+          </article>
+        </div>
       </section>
     </main>
 

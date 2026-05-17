@@ -102,6 +102,101 @@ const grenades = [
   ["T-13 IMPACT", 80, "Impact"], ["RGN UDZS", 80, "Impact"], ["RGO UDZS", 114, "Impact"]
 ].map(toWeapon);
 
+const attachmentSlots = ["Optic", "Barrel", "Underbarrel", "Other", "Ammo"];
+const attachments = [
+  ["Optic", "No attachment", 0],
+  ["Optic", "Carry Handle Sight", 0, { exclusive: ["M16A4", "M16A1", "M16A3", "M4A1", "M4", "C7A2", "C8A2"] }],
+  ["Optic", "Lyman Sight", 1050], ["Optic", "Acro P-1", 390],
+  ["Optic", "Z-Point", 10], ["Optic", "EOTech XPS2", 45], ["Optic", "Full Ring Sight", 50],
+  ["Optic", "Delta Sight", 70], ["Optic", "EOTech 552", 85], ["Optic", "Half Ring Sight", 90],
+  ["Optic", "Mini Sight", 120], ["Optic", "Comp Aimpoint", 130], ["Optic", "Reflex Sight", 285],
+  ["Optic", "Kobra Sight", 330], ["Optic", "BUIS Sight", 480], ["Optic", "IWI Sight", 1015],
+  ["Optic", "Quick-Release Sight", 1105], ["Optic", "AAC Flip Up Sight", 1275], ["Optic", "DCL 120", 1320],
+  ["Optic", "Dual Aperture Sight", 1400], ["Optic", "AMT-Terminator", 2029], ["Optic", "Handmade Sight", 3000],
+  ["Optic", "Animu Sight", 4500], ["Optic", "Furro Sight", 5000], ["Optic", "Hand Sight", 5250],
+  ["Optic", "Anti Sight", 5600], ["Optic", "Hensoldt 3x Sight", 0, { exclusivePrefix: ["STG-91", "STG-91C", "STG-91K", "STG-59H"] }],
+  ["Optic", "Anti-Aircraft Irons", 0, { exclusive: ["M60E6", "MG3KWS"] }],
+  ["Optic", "Reflector Scope", 2700],
+  ["Optic", "Malcolm 3x Scope", 215], ["Optic", "H&K Sight", 20], ["Optic", "MARS", 70],
+  ["Optic", "Backup Sight", 100], ["Optic", "Leupold M8-2x", 100, { categories: ["Sniper Rifle", "Revolver", "Carbine"] }],
+  ["Optic", "PK-A", 165], ["Optic", "Steyr Sight", 210], ["Optic", "PKA-S", 225],
+  ["Optic", "Double Open Sight", 250], ["Optic", "Izhmash Sight", 315], ["Optic", "Super Slim Sight", 350],
+  ["Optic", "Coyote Sight", 380], ["Optic", "Diopter Sight", 410], ["Optic", "Pilad 3", 500],
+  ["Optic", "Kel-Tec Sight", 540], ["Optic", "Kalashnikov Sight", 570], ["Optic", "KAC Sight", 600],
+  ["Optic", "1200M Sight", 700], ["Optic", "Barska Electro", 750], ["Optic", "H&K Export Sight", 780],
+  ["Optic", "Bundeswehr Sight", 870], ["Optic", "OKP-7", 900], ["Optic", "DDHB Reflex", 1200],
+  ["Optic", "PU-1 Scope", 2000, { categories: ["Sniper Rifle", "DMR"] }],
+  ["Optic", "PM II", 5000, { categories: ["Sniper Rifle"] }],
+  ["Optic", "Remington Irons", 0, { exclusive: ["MODEL 700"] }],
+  ["Optic", "PSO-1 Scope", 250], ["Optic", "C79", 125], ["Optic", "M145", 185],
+  ["Optic", "ACOG Scope", 430], ["Optic", "VCOG 6x Scope", 455], ["Optic", "TA33 ACOG", 650],
+  ["Optic", "MBUS Sight", 1150], ["Optic", "Swarovski Scope", 1355], ["Optic", "Leupold M8-6x", 1500],
+  ["Optic", "TA11 ACOG", 1750], ["Optic", "PSO-1M2 Scope", 2250], ["Optic", "TA01 ACOG", 2500],
+  ["Optic", "VCOG 8x Scope", 3455], ["Optic", "Global Offensive Scope", 5000],
+  ["Optic", "Sidewinder ED", 5000], ["Optic", "Hi-Power 8-32", 5000], ["Optic", "Klassik LM", 5000],
+  ["Optic", "NXS 8-32", 5000], ["Optic", "NXS 5.5-22", 5000], ["Optic", "Leupold Mark 4", 5000],
+  ["Optic", "Electra 5x", 5000], ["Optic", "PRO 3-9X Scope", 5000], ["Optic", "CS/OS15", 5000],
+  ["Optic", "Sagittarius 40x Scope", 6000], ["Optic", "FF 3X NV", 10000],
+
+  ["Barrel", "No attachment", 0],
+  ["Barrel", "Remove Suppressor", 0, { exclusive: ["HONEY BADGER"] }],
+  ["Barrel", "Suppressor", 30], ["Barrel", "R2 Suppressor", 40], ["Barrel", "Flash Hider", 100],
+  ["Barrel", "ARS Suppressor", 150], ["Barrel", "PBS-1 Suppressor", 205], ["Barrel", "PBS-4 Suppressor", 245],
+  ["Barrel", "Osprey Suppressor", 250], ["Barrel", "Oil Filter", 500], ["Barrel", "Sionics Suppressor", 2500, { exclusive: ["MAC-10"] }],
+  ["Barrel", "Muffler", 600], ["Barrel", "Compensator", 120],
+  ["Barrel", "Muzzle Brake", 175], ["Barrel", "Halbek Device", 765], ["Barrel", "Loudener", 835],
+  ["Barrel", "Muzzle Booster", 1200], ["Barrel", "T-Brake", 850], ["Barrel", "X-Ring", 900],
+  ["Barrel", "CTAR Barrel", 0, { exclusive: ["TAR-21"] }],
+  ["Barrel", "Short Barrel", 465, { categories: ["Assault Rifle", "LMG", "Shotgun", "DMR", "Sniper Rifle"] }],
+  ["Barrel", "Long Barrel", 930, { categories: ["Pistol", "Assault Rifle", "LMG", "Shotgun", "DMR", "Sniper Rifle"] }],
+  ["Barrel", "Extended Barrel", 1000], ["Barrel", "Taurus Barrel", 1200, { exclusive: ["JUDGE", "EXECUTIONER"] }],
+
+  ["Underbarrel", "No attachment", 0],
+  ["Underbarrel", "Folded Grip", 0], ["Underbarrel", "Vertical Grip", 45], ["Underbarrel", "Potato Grip", 108],
+  ["Underbarrel", "Angled Grip", 125], ["Underbarrel", "Skeleton Grip", 205], ["Underbarrel", "Folding Grip", 265],
+  ["Underbarrel", "Stubby Grip", 355], ["Underbarrel", "Pistol Grip", 580], ["Underbarrel", "Romanian Grip", 630],
+  ["Underbarrel", "Sideways Grip", 715], ["Underbarrel", "Hera CQC Grip", 870], ["Underbarrel", "Chainsaw Grip", 950],
+  ["Underbarrel", "35 Round Box Mag", 950, { exclusive: ["HENRY 45-70"] }],
+  ["Underbarrel", "Flashlight", 0], ["Underbarrel", "Laser", 75], ["Underbarrel", "Green Laser", 110],
+  ["Underbarrel", "Blue Laser", 200], ["Underbarrel", "Yellow Laser", 270], ["Underbarrel", "Tri Laser", 1070],
+
+  ["Other", "No attachment", 0],
+  ["Other", "Flashlight", 0], ["Other", "Laser", 20], ["Other", "Green Laser", 110], ["Other", "Blue Laser", 200],
+  ["Other", "Yellow Laser", 270],
+  ["Other", "Tri Laser", 1015], ["Other", "Ballistics Tracker", 1500],
+  ["Other", "Extended Stock", 0, { exclusive: ["UZI"] }],
+  ["Other", "Extended Stock", 0, { exclusive: ["MICRO UZI"] }],
+  ["Other", "Collapsible Stock", 0, { exclusive: ["AK-47", "AKM", "AK-74"] }],
+  ["Other", "G Stock", 450, { exclusive: ["G17", "G18C"] }],
+  ["Other", "Raffica Stock", 450, { exclusive: ["M9", "93R"] }],
+  ["Other", "KAC Stock", 475, { exclusive: ["RH-44"] }],
+  ["Other", "Retract Stock", 510], ["Other", "Remove Stock", 510], ["Other", "Full Stock", 595],
+  ["Other", "Boom Stock", 1000, { exclusive: ["SAWED OFF"] }],
+  ["Other", "Police Stock", 2000, { exclusive: ["RAVEN XIX"] }],
+  ["Other", "Straight Pull Bolt", 2000, { categories: ["Sniper Rifle"] }],
+  ["Other", "Taurus Stock", 2500, { exclusive: ["JUDGE", "EXECUTIONER"] }],
+  ["Other", "Wire Stock", 3000, { exclusive: ["M231"] }],
+  ["Other", "Canted Iron Sight", 310], ["Other", "Canted Delta Sight", 405],
+  ["Other", "33rd Mag", 950, { exclusive: ["G17", "G18C"] }],
+  ["Other", "Extended Magazine", 1000, { exclusive: ["AS VAL", "SR-3M"] }],
+  ["Other", "30rd Mag", 1000, { exclusive: ["TOMMY GUN"] }],
+  ["Other", "50rd Drum", 1000, { exclusive: ["TOMMY GUN"] }],
+  ["Other", "20rd Drum", 1000, { exclusive: ["AA-12"] }],
+  ["Other", "Pro Mag", 1337, { exclusive: ["ZIP 22"] }],
+  ["Other", "Extended Tube", 1450, { exclusive: ["MODEL 870", "SUPER SHORTY"] }],
+  ["Other", "Speed Loader", 2255, { categories: ["Revolver"] }],
+
+  ["Ammo", "No attachment", 0],
+  ["Ammo", "Armor Piercing", 1000, { excludeCategories: ["Shotgun"] }],
+  ["Ammo", "Super Armor Piercing", 1500, { excludeCategories: ["Shotgun"] }],
+  ["Ammo", "Hollow Point", 2000, { excludeCategories: ["Shotgun"] }],
+  ["Ammo", "Tracerless", 750, { excludeCategories: ["Shotgun"] }],
+  ["Ammo", "Special", 1750, { excludeCategories: ["Shotgun"] }],
+  ["Ammo", "Silent", 2500, { excludeCategories: ["Shotgun"] }],
+  ["Ammo", "Flechette", 500, { shotgunOnly: true }], ["Ammo", "Birdshot", 1000, { shotgunOnly: true }],
+  ["Ammo", "Rubber Pellets", 1500, { shotgunOnly: true }], ["Ammo", "Slugs", 2000, { shotgunOnly: true }]
+].map(toAttachment);
+
 const primaryByClass = {
   Assault: ["Assault Rifle", "Battle Rifle", "Shotgun"],
   Scout: ["PDW", "Carbine", "Shotgun"],
@@ -113,6 +208,9 @@ const rankInput = document.querySelector("#rank");
 const form = document.querySelector("#randomizer-form");
 const includeLocked = document.querySelector("#include-locked");
 const classMatch = document.querySelector("#class-match");
+const includeAttachments = document.querySelector("#include-attachments");
+const primaryKillsInput = document.querySelector("#primary-kills");
+const secondaryKillsInput = document.querySelector("#secondary-kills");
 const primaryName = document.querySelector("#primary-name");
 const primaryMeta = document.querySelector("#primary-meta");
 const secondaryName = document.querySelector("#secondary-name");
@@ -125,15 +223,55 @@ const grenadeCount = document.querySelector("#grenade-count");
 const rankNote = document.querySelector("#rank-note");
 const weaponPool = document.querySelector("#weapon-pool");
 const copyButton = document.querySelector("#copy-loadout");
+const attachmentsPanel = document.querySelector("#attachments-panel");
+const attachmentsNote = document.querySelector("#attachments-note");
+const primaryAttachments = document.querySelector("#primary-attachments");
+const secondaryAttachments = document.querySelector("#secondary-attachments");
+const randomizeWeaponsButton = document.querySelector("#randomize-weapons");
+const randomizeAttachmentsButton = document.querySelector("#randomize-attachments");
+const navButtons = document.querySelectorAll(".nav-button");
+const pages = document.querySelectorAll(".page");
+const weaponSearch = document.querySelector("#weapon-search");
+const weaponCategory = document.querySelector("#weapon-category");
+const weaponBrowser = document.querySelector("#weapon-browser");
+const selectedPrimary = document.querySelector("#selected-primary");
+const selectedSecondary = document.querySelector("#selected-secondary");
+const challengeType = document.querySelector("#challenge-type");
+const challengeTitle = document.querySelector("#challenge-title");
+const challengeText = document.querySelector("#challenge-text");
+const randomChallengeButton = document.querySelector("#random-challenge");
 
-let currentLoadout = { primary: primaries[0], secondary: secondaries[0], grenade: grenades[0], className: "" };
+let currentLoadout = {
+  primary: primaries[0],
+  secondary: secondaries[0],
+  grenade: grenades[0],
+  className: "",
+  primaryAttachments: {},
+  secondaryAttachments: {}
+};
 
 function toWeapon([name, rank, category, unlockLabel]) {
   return { name, rank, category, unlockLabel };
 }
 
+function toAttachment([slot, name, kills, rules = {}]) {
+  return { slot, name, kills, ...rules };
+}
+
 function getRank() {
   return Math.max(0, Number.parseInt(rankInput.value, 10) || 0);
+}
+
+function getPrimaryKills() {
+  return getKillsFromInput(primaryKillsInput);
+}
+
+function getSecondaryKills() {
+  return getKillsFromInput(secondaryKillsInput);
+}
+
+function getKillsFromInput(input) {
+  return Math.max(0, Number.parseInt(input.value.replace(/\D/g, ""), 10) || 0);
 }
 
 function getAvailable(list, rank) {
@@ -162,9 +300,83 @@ function randomItemExcept(list, previous) {
   return next;
 }
 
+function randomizeAttachmentSet(weapon, kills, previousSet = {}) {
+  return attachmentSlots.reduce((set, slot) => {
+    const pool = attachments.filter((attachment) => {
+      return attachment.slot === slot && attachment.kills <= kills && isAttachmentEligible(attachment, weapon);
+    });
+
+    set[slot] = randomItemExcept(pool, previousSet[slot]);
+    return set;
+  }, {});
+}
+
+function isAttachmentEligible(attachment, weapon) {
+  if (attachment.name === "No attachment") {
+    return true;
+  }
+
+  const weaponName = normalize(weapon.name);
+  const weaponCategory = weapon.category;
+
+  if (attachment.exclusive && !attachment.exclusive.some((name) => normalize(name) === weaponName)) {
+    return false;
+  }
+
+  if (attachment.exclusivePrefix && !attachment.exclusivePrefix.some((prefix) => weaponName.startsWith(normalize(prefix)))) {
+    return false;
+  }
+
+  if (attachment.categories && !attachment.categories.includes(weaponCategory)) {
+    return false;
+  }
+
+  if (attachment.excludeCategories && attachment.excludeCategories.includes(weaponCategory)) {
+    return false;
+  }
+
+  if (attachment.shotgunOnly && !isShotgunWeapon(weapon)) {
+    return false;
+  }
+
+  if (attachment.slot === "Underbarrel" && isSecondaryWeapon(weapon)) {
+    return false;
+  }
+
+  if (attachment.slot === "Barrel" && isIntegralBarrelWeapon(weapon) && attachment.name !== "Remove Suppressor") {
+    return false;
+  }
+
+  return true;
+}
+
+function isSecondaryWeapon(weapon) {
+  return secondaries.some((secondary) => secondary.name === weapon.name);
+}
+
+function isShotgunWeapon(weapon) {
+  return weapon.category === "Shotgun" || ["SUPER SHORTY", "SAWED OFF", "SAIGA-12U"].includes(normalize(weapon.name));
+}
+
+function isIntegralBarrelWeapon(weapon) {
+  return ["AS VAL", "VSS VINTOREZ", "HONEY BADGER", "K7", "SMX-9SD", "AWS"].includes(normalize(weapon.name));
+}
+
+function normalize(value) {
+  return value.toUpperCase().replace(/\s+/g, " ").trim();
+}
+
 function randomize(event) {
   event?.preventDefault();
+  randomizeWeapons({ includeAttachmentRoll: includeAttachments.checked });
+}
 
+function randomizeWeaponsOnly() {
+  randomizeWeapons({ includeAttachmentRoll: false });
+}
+
+function randomizeWeapons({ includeAttachmentRoll }) {
+  const previousLoadout = currentLoadout;
   const rank = getRank();
   const secondaryPool = getAvailable(secondaries, rank);
   const grenadePool = getAvailable(grenades, rank);
@@ -177,13 +389,58 @@ function randomize(event) {
   }
 
   currentLoadout = {
-    primary: randomItemExcept(primaryPool, currentLoadout.primary),
-    secondary: randomItemExcept(secondaryPool, currentLoadout.secondary),
-    grenade: randomItemExcept(grenadePool, currentLoadout.grenade),
-    className
+    primary: randomItemExcept(primaryPool, previousLoadout.primary),
+    secondary: randomItemExcept(secondaryPool, previousLoadout.secondary),
+    grenade: randomItemExcept(grenadePool, previousLoadout.grenade),
+    className,
+    primaryAttachments: {},
+    secondaryAttachments: {}
   };
 
+  if (includeAttachments.checked) {
+    currentLoadout.primaryAttachments = includeAttachmentRoll
+      ? randomizeAttachmentSet(currentLoadout.primary, getPrimaryKills(), previousLoadout.primaryAttachments)
+      : previousLoadout.primaryAttachments;
+    currentLoadout.secondaryAttachments = includeAttachmentRoll
+      ? randomizeAttachmentSet(currentLoadout.secondary, getSecondaryKills(), previousLoadout.secondaryAttachments)
+      : previousLoadout.secondaryAttachments;
+  }
+
   render(rank);
+}
+
+function randomizeAttachmentsOnly() {
+  if (includeAttachments.checked) {
+    currentLoadout.primaryAttachments = randomizeAttachmentSet(currentLoadout.primary, getPrimaryKills(), currentLoadout.primaryAttachments);
+    currentLoadout.secondaryAttachments = randomizeAttachmentSet(currentLoadout.secondary, getSecondaryKills(), currentLoadout.secondaryAttachments);
+  } else {
+    currentLoadout.primaryAttachments = {};
+    currentLoadout.secondaryAttachments = {};
+  }
+
+  render();
+}
+
+function selectWeapon(kind, weaponName) {
+  const list = kind === "primary" ? primaries : secondaries;
+  const weapon = list.find((item) => item.name === weaponName);
+
+  if (!weapon) {
+    return;
+  }
+
+  currentLoadout[kind] = weapon;
+
+  if (includeAttachments.checked) {
+    currentLoadout[`${kind}Attachments`] = randomizeAttachmentSet(
+      weapon,
+      kind === "primary" ? getPrimaryKills() : getSecondaryKills(),
+      currentLoadout[`${kind}Attachments`]
+    );
+  }
+
+  render();
+  showPage("randomizer");
 }
 
 function render(rank = getRank()) {
@@ -198,6 +455,9 @@ function render(rank = getRank()) {
   secondaryMeta.textContent = metaText(currentLoadout.secondary);
   grenadeName.textContent = currentLoadout.grenade.name;
   grenadeMeta.textContent = metaText(currentLoadout.grenade);
+  selectedPrimary.textContent = currentLoadout.primary.name;
+  selectedSecondary.textContent = currentLoadout.secondary.name;
+  renderAttachments();
   fitWeaponNames();
 
   primaryCount.textContent = primaryPool.length;
@@ -227,6 +487,32 @@ function unlockText(weapon) {
   return weapon.unlockLabel || `Rank ${weapon.rank}`;
 }
 
+function renderAttachments() {
+  attachmentsPanel.classList.toggle("is-disabled", !includeAttachments.checked);
+  attachmentsNote.textContent = includeAttachments.checked
+    ? `Primary ${getPrimaryKills()} kills / Secondary ${getSecondaryKills()} kills`
+    : "Off";
+
+  primaryAttachments.innerHTML = renderAttachmentRows(currentLoadout.primaryAttachments);
+  secondaryAttachments.innerHTML = renderAttachmentRows(currentLoadout.secondaryAttachments);
+}
+
+function renderAttachmentRows(attachmentSet) {
+  return attachmentSlots.map((slot) => {
+    const attachment = attachmentSet[slot] || { name: "No attachment", kills: 0 };
+
+    return `
+      <div class="attachment-row">
+        <span class="attachment-slot">${slot}</span>
+        <span>
+          <span class="attachment-name">${attachment.name}</span>
+          <span class="attachment-unlock">${attachment.kills === 0 ? "0 kills" : `${attachment.kills} kills`}</span>
+        </span>
+      </div>
+    `;
+  }).join("");
+}
+
 function fitWeaponNames() {
   [primaryName, secondaryName, grenadeName].forEach((element) => {
     element.style.fontSize = "";
@@ -243,7 +529,9 @@ async function copyLoadout() {
     currentLoadout.className ? `Class: ${currentLoadout.className}` : null,
     `Primary: ${currentLoadout.primary.name} (${currentLoadout.primary.category}, ${unlockText(currentLoadout.primary).toLowerCase()})`,
     `Secondary: ${currentLoadout.secondary.name} (${currentLoadout.secondary.category}, ${unlockText(currentLoadout.secondary).toLowerCase()})`,
-    `Grenade: ${currentLoadout.grenade.name} (${currentLoadout.grenade.category}, ${unlockText(currentLoadout.grenade).toLowerCase()})`
+    `Grenade: ${currentLoadout.grenade.name} (${currentLoadout.grenade.category}, ${unlockText(currentLoadout.grenade).toLowerCase()})`,
+    includeAttachments.checked ? attachmentCopyText("Primary attachments", currentLoadout.primaryAttachments) : null,
+    includeAttachments.checked ? attachmentCopyText("Secondary attachments", currentLoadout.secondaryAttachments) : null
   ].filter(Boolean).join("\n");
 
   try {
@@ -258,9 +546,117 @@ async function copyLoadout() {
   }, 1200);
 }
 
+function attachmentCopyText(label, attachmentSet) {
+  const lines = attachmentSlots.map((slot) => {
+    const attachment = attachmentSet[slot] || { name: "No attachment" };
+    return `${slot}: ${attachment.name}`;
+  });
+
+  return `${label}\n${lines.join("\n")}`;
+}
+
+function showPage(pageName) {
+  pages.forEach((page) => {
+    page.classList.toggle("is-hidden", !page.classList.contains(`page-${pageName}`));
+  });
+
+  navButtons.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.page === pageName);
+  });
+}
+
+function setupWeaponBrowser() {
+  const categories = [...new Set([...primaries, ...secondaries].map((weapon) => weapon.category))].sort();
+
+  weaponCategory.innerHTML = [
+    `<option value="All">All categories</option>`,
+    ...categories.map((category) => `<option value="${category}">${category}</option>`)
+  ].join("");
+
+  renderWeaponBrowser();
+}
+
+function renderWeaponBrowser() {
+  const search = normalize(weaponSearch.value);
+  const category = weaponCategory.value;
+  const groups = [
+    ["Primaries", primaries, "primary"],
+    ["Secondaries", secondaries, "secondary"]
+  ];
+
+  weaponBrowser.innerHTML = groups.map(([title, list, kind]) => {
+    const weapons = list.filter((weapon) => {
+      const matchesSearch = !search || normalize(weapon.name).includes(search);
+      const matchesCategory = category === "All" || weapon.category === category;
+      return matchesSearch && matchesCategory;
+    });
+
+    if (!weapons.length) {
+      return "";
+    }
+
+    return `
+      <section class="weapon-category-group">
+        <h3>${title}</h3>
+        <div class="weapon-browser-grid">
+          ${weapons.map((weapon) => `
+            <article class="weapon-select-card">
+              <strong>${weapon.name}</strong>
+              <span>${weapon.category} - ${unlockText(weapon)}</span>
+              <button type="button" data-select-kind="${kind}" data-select-weapon="${weapon.name}">
+                Use as ${kind}
+              </button>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+    `;
+  }).join("");
+}
+
+const challenges = [
+  ["Loadout", "One Life Proof", "Use the current full loadout until you get a five-kill streak, then reroll."],
+  ["Loadout", "Attachment Faith", "Turn attachments on and use exactly what the hub gives you for one full match."],
+  ["Class", "Squad Fill", "Pick a matching primary class and play only that class for the whole round."],
+  ["Class", "Recon Rush", "Use a Recon-compatible loadout, but fight around objectives instead of sitting back."],
+  ["Playstyle", "No Comfort Zone", "After every death, change your route before taking another fight."],
+  ["Playstyle", "Hipfire Tax", "Use hipfire for the first three kills of the match."],
+  ["Objective", "Flag First", "You can only count the challenge complete after helping capture or defend an objective."],
+  ["Objective", "Teammate Anchor", "Stay within supporting distance of at least one teammate for five minutes."],
+  ["Restriction", "No Reload Greed", "Once you start firing at an enemy, do not reload until the fight is over."],
+  ["Restriction", "Secondary Clause", "Get three kills with your secondary before swapping back to primary."]
+];
+
+function rollChallenge() {
+  const [type, title, text] = randomItem(challenges);
+  challengeType.textContent = type;
+  challengeTitle.textContent = title;
+  challengeText.textContent = text;
+}
+
 form.addEventListener("submit", randomize);
 includeLocked.addEventListener("change", randomize);
 classMatch.addEventListener("change", randomize);
+includeAttachments.addEventListener("change", randomizeAttachmentsOnly);
+primaryKillsInput.addEventListener("input", randomizeAttachmentsOnly);
+secondaryKillsInput.addEventListener("input", randomizeAttachmentsOnly);
+randomizeWeaponsButton.addEventListener("click", randomizeWeaponsOnly);
+randomizeAttachmentsButton.addEventListener("click", randomizeAttachmentsOnly);
 copyButton.addEventListener("click", copyLoadout);
+weaponSearch.addEventListener("input", renderWeaponBrowser);
+weaponCategory.addEventListener("change", renderWeaponBrowser);
+randomChallengeButton.addEventListener("click", rollChallenge);
+navButtons.forEach((button) => {
+  button.addEventListener("click", () => showPage(button.dataset.page));
+});
+weaponBrowser.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-select-kind]");
 
+  if (button) {
+    selectWeapon(button.dataset.selectKind, button.dataset.selectWeapon);
+  }
+});
+
+setupWeaponBrowser();
+rollChallenge();
 randomize();
