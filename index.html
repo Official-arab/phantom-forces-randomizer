@@ -150,14 +150,26 @@
       <section class="page page-challenges is-hidden">
         <div class="challenge-panel">
           <div class="pool-heading">
-            <h2>Challenge Generator</h2>
+            <div>
+              <h2>Challenge Generator</h2>
+              <span class="section-note">Pick a category or let fate be rude.</span>
+            </div>
             <button id="random-challenge" type="button">New Challenge</button>
+          </div>
+          <div class="challenge-categories" aria-label="Challenge categories">
+            <button class="challenge-filter is-active" type="button" data-challenge-category="All">All</button>
+            <button class="challenge-filter" type="button" data-challenge-category="Loadout">Loadout</button>
+            <button class="challenge-filter" type="button" data-challenge-category="Class">Class</button>
+            <button class="challenge-filter" type="button" data-challenge-category="Objective">Objective</button>
+            <button class="challenge-filter" type="button" data-challenge-category="Restriction">Restriction</button>
+            <button class="challenge-filter" type="button" data-challenge-category="Playstyle">Playstyle</button>
           </div>
           <article class="challenge-card">
             <p id="challenge-type" class="card-label">Loadout</p>
             <h2 id="challenge-title">Fresh Roll</h2>
             <p id="challenge-text">Randomize a full loadout and use it for one complete match.</p>
           </article>
+          <div id="challenge-deck" class="challenge-deck"></div>
         </div>
       </section>
     </main>

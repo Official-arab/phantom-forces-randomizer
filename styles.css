@@ -73,7 +73,7 @@ input {
 
 .control-panel {
   display: grid;
-  grid-template-columns: 1fr minmax(280px, 390px);
+  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
   gap: 24px;
   align-items: end;
   padding: 28px;
@@ -114,7 +114,7 @@ h1 {
 
 .input-row {
   display: grid;
-  grid-template-columns: minmax(90px, 1fr) repeat(3, auto);
+  grid-template-columns: minmax(100px, 1fr) repeat(3, minmax(132px, auto));
   gap: 10px;
 }
 
@@ -160,32 +160,32 @@ button:hover {
   background: #283545;
 }
 
-.options {
+.options,
+.attachment-controls,
+.challenge-categories {
   grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
-.check-option {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--muted);
-  font-weight: 700;
-}
-
+.check-option,
 .kills-option {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.45);
+  padding: 8px 10px;
   color: var(--muted);
   font-weight: 700;
 }
 
 .kills-option input {
-  width: 112px;
-  padding: 8px 10px;
+  width: 96px;
+  padding: 7px 9px;
 }
 
 .check-option input {
@@ -194,13 +194,13 @@ button:hover {
 
 .results {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   margin-top: 16px;
 }
 
 .weapon-card {
-  min-height: 230px;
+  min-height: 215px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -259,7 +259,7 @@ button:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: clamp(1.55rem, 6vw, 5.2rem);
+  font-size: clamp(1.45rem, 5vw, 4.35rem);
   line-height: 0.95;
 }
 
@@ -409,7 +409,7 @@ button:hover {
 }
 
 .challenge-card h2 {
-  margin: 40px 0 14px;
+  margin: 32px 0 14px;
   font-size: clamp(2rem, 7vw, 5rem);
   line-height: 0.95;
 }
@@ -422,9 +422,71 @@ button:hover {
   font-weight: 800;
 }
 
+.section-note {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.challenge-categories {
+  margin: 0 0 16px;
+}
+
+.challenge-filter {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  background: rgba(13, 17, 23, 0.48);
+  color: var(--text);
+  padding: 9px 12px;
+}
+
+.challenge-filter.is-active {
+  background: var(--accent);
+  color: #17120a;
+  border-color: transparent;
+}
+
+.challenge-deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.mini-challenge {
+  min-height: 126px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.55);
+  padding: 14px;
+}
+
+.mini-challenge span {
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.mini-challenge strong {
+  display: block;
+  margin-top: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-challenge p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
 .attachments-panel {
   margin-top: 16px;
-  padding: 22px;
+  padding: 18px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(21, 27, 35, 0.88);
@@ -448,10 +510,7 @@ button:hover {
 }
 
 .attachment-controls {
-  display: flex;
   justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 12px;
 }
 
 .attachment-grid {
@@ -464,7 +523,7 @@ button:hover {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(13, 17, 23, 0.52);
-  padding: 16px;
+  padding: 14px;
 }
 
 .primary-attachments {
@@ -487,7 +546,7 @@ button:hover {
 
 .attachment-row {
   display: grid;
-  grid-template-columns: 105px minmax(0, 1fr);
+  grid-template-columns: 96px minmax(0, 1fr);
   gap: 10px;
   align-items: baseline;
   min-height: 38px;

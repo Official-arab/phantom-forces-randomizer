@@ -240,6 +240,9 @@ const challengeType = document.querySelector("#challenge-type");
 const challengeTitle = document.querySelector("#challenge-title");
 const challengeText = document.querySelector("#challenge-text");
 const randomChallengeButton = document.querySelector("#random-challenge");
+const challengeFilters = document.querySelectorAll(".challenge-filter");
+const challengeDeck = document.querySelector("#challenge-deck");
+let activeChallengeCategory = "All";
 
 let currentLoadout = {
   primary: primaries[0],
@@ -617,21 +620,59 @@ function renderWeaponBrowser() {
 const challenges = [
   ["Loadout", "One Life Proof", "Use the current full loadout until you get a five-kill streak, then reroll."],
   ["Loadout", "Attachment Faith", "Turn attachments on and use exactly what the hub gives you for one full match."],
+  ["Loadout", "No Favorites", "Use Weapons Only, then play the result even if it hurts your soul a little."],
+  ["Loadout", "Attachment Surgeon", "Pick your own weapons, then hit Attachments Only and keep every attachment."],
   ["Class", "Squad Fill", "Pick a matching primary class and play only that class for the whole round."],
   ["Class", "Recon Rush", "Use a Recon-compatible loadout, but fight around objectives instead of sitting back."],
+  ["Class", "Support Tax", "Play Support and drop ammo for teammates before chasing kills."],
+  ["Class", "Assault Entry", "Be the first player through a doorway or onto the point three times."],
   ["Playstyle", "No Comfort Zone", "After every death, change your route before taking another fight."],
   ["Playstyle", "Hipfire Tax", "Use hipfire for the first three kills of the match."],
+  ["Playstyle", "Quiet Hands", "No panic spraying. Fire in controlled bursts for one full life."],
+  ["Playstyle", "Close The Gap", "Every kill must happen inside medium range or closer for one life."],
   ["Objective", "Flag First", "You can only count the challenge complete after helping capture or defend an objective."],
   ["Objective", "Teammate Anchor", "Stay within supporting distance of at least one teammate for five minutes."],
+  ["Objective", "Point Bodyguard", "Pick one objective and defend it until the enemy fully clears you out."],
+  ["Objective", "Rotate Early", "Move to the next useful lane before the fight comes to you."],
   ["Restriction", "No Reload Greed", "Once you start firing at an enemy, do not reload until the fight is over."],
-  ["Restriction", "Secondary Clause", "Get three kills with your secondary before swapping back to primary."]
+  ["Restriction", "Secondary Clause", "Get three kills with your secondary before swapping back to primary."],
+  ["Restriction", "No Meta Mercy", "If the randomizer gives you a comfortable gun, remove one attachment slot manually."],
+  ["Restriction", "Grenade Discipline", "You only get one grenade throw per life. Make it count."]
 ];
 
 function rollChallenge() {
-  const [type, title, text] = randomItem(challenges);
+  const pool = getChallengePool();
+  const [type, title, text] = randomItem(pool);
   challengeType.textContent = type;
   challengeTitle.textContent = title;
   challengeText.textContent = text;
+  renderChallengeDeck();
+}
+
+function getChallengePool() {
+  if (activeChallengeCategory === "All") {
+    return challenges;
+  }
+
+  return challenges.filter(([type]) => type === activeChallengeCategory);
+}
+
+function setChallengeCategory(category) {
+  activeChallengeCategory = category;
+  challengeFilters.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.challengeCategory === category);
+  });
+  rollChallenge();
+}
+
+function renderChallengeDeck() {
+  challengeDeck.innerHTML = getChallengePool().map(([type, title, text]) => `
+    <article class="mini-challenge">
+      <span>${type}</span>
+      <strong>${title}</strong>
+      <p>${text}</p>
+    </article>
+  `).join("");
 }
 
 form.addEventListener("submit", randomize);
@@ -646,6 +687,9 @@ copyButton.addEventListener("click", copyLoadout);
 weaponSearch.addEventListener("input", renderWeaponBrowser);
 weaponCategory.addEventListener("change", renderWeaponBrowser);
 randomChallengeButton.addEventListener("click", rollChallenge);
+challengeFilters.forEach((button) => {
+  button.addEventListener("click", () => setChallengeCategory(button.dataset.challengeCategory));
+});
 navButtons.forEach((button) => {
   button.addEventListener("click", () => showPage(button.dataset.page));
 });
