@@ -236,6 +236,14 @@ const weaponCategory = document.querySelector("#weapon-category");
 const weaponBrowser = document.querySelector("#weapon-browser");
 const selectedPrimary = document.querySelector("#selected-primary");
 const selectedSecondary = document.querySelector("#selected-secondary");
+const inspectorSlot = document.querySelector("#inspector-slot");
+const inspectorTitle = document.querySelector("#inspector-title");
+const inspectorMeta = document.querySelector("#inspector-meta");
+const inspectorWiki = document.querySelector("#inspector-wiki");
+const inspectorStats = document.querySelector("#inspector-stats");
+const inspectorLiveStats = document.querySelector("#inspector-live-stats");
+const inspectorAttachments = document.querySelector("#inspector-attachments");
+const useInspectedWeaponButton = document.querySelector("#use-inspected-weapon");
 const challengeType = document.querySelector("#challenge-type");
 const challengeTitle = document.querySelector("#challenge-title");
 const challengeText = document.querySelector("#challenge-text");
@@ -243,6 +251,8 @@ const randomChallengeButton = document.querySelector("#random-challenge");
 const challengeFilters = document.querySelectorAll(".challenge-filter");
 const challengeDeck = document.querySelector("#challenge-deck");
 let activeChallengeCategory = "All";
+let inspectedWeapon = { kind: "primary", weapon: primaries[0] };
+let statsRequestId = 0;
 
 let currentLoadout = {
   primary: primaries[0],
@@ -446,6 +456,18 @@ function selectWeapon(kind, weaponName) {
   showPage("randomizer");
 }
 
+function inspectWeapon(kind, weaponName) {
+  const list = kind === "primary" ? primaries : secondaries;
+  const weapon = list.find((item) => item.name === weaponName);
+
+  if (!weapon) {
+    return;
+  }
+
+  inspectedWeapon = { kind, weapon };
+  renderInspector();
+}
+
 function render(rank = getRank()) {
   const primaryPool = getAvailable(primaries, rank);
   const secondaryPool = getAvailable(secondaries, rank);
@@ -461,6 +483,7 @@ function render(rank = getRank()) {
   selectedPrimary.textContent = currentLoadout.primary.name;
   selectedSecondary.textContent = currentLoadout.secondary.name;
   renderAttachments();
+  renderInspector();
   fitWeaponNames();
 
   primaryCount.textContent = primaryPool.length;
@@ -604,17 +627,331 @@ function renderWeaponBrowser() {
         <div class="weapon-browser-grid">
           ${weapons.map((weapon) => `
             <article class="weapon-select-card">
+              ${buildCompactRecoilPreview(weapon)}
               <strong>${weapon.name}</strong>
               <span>${weapon.category} - ${unlockText(weapon)}</span>
-              <button type="button" data-select-kind="${kind}" data-select-weapon="${weapon.name}">
-                Use as ${kind}
-              </button>
+              <div class="weapon-card-actions">
+                <button type="button" data-inspect-kind="${kind}" data-inspect-weapon="${weapon.name}">
+                  Inspect
+                </button>
+                <button type="button" data-select-kind="${kind}" data-select-weapon="${weapon.name}">
+                  Use
+                </button>
+              </div>
             </article>
           `).join("")}
         </div>
       </section>
     `;
   }).join("");
+}
+
+function renderInspector() {
+  const { kind, weapon } = inspectedWeapon;
+  const kills = kind === "primary" ? getPrimaryKills() : getSecondaryKills();
+  const classText = getWeaponClasses(weapon).join(", ") || "Any";
+
+  inspectorSlot.textContent = kind === "primary" ? "Primary" : "Secondary";
+  inspectorTitle.textContent = weapon.name;
+  inspectorMeta.textContent = `${weapon.category} - ${unlockText(weapon)}`;
+  inspectorWiki.href = wikiUrl(weapon.name, true);
+  useInspectedWeaponButton.textContent = `Use as ${kind}`;
+  inspectorStats.innerHTML = [
+    ["Slot", kind === "primary" ? "Primary" : "Secondary"],
+    ["Category", weapon.category],
+    ["Unlock", unlockText(weapon)],
+    ["Classes", classText],
+    ["Kills checked", `${kills}`]
+  ].map(([label, value]) => `
+    <div class="stat-tile">
+      <span>${label}</span>
+      <strong>${value}</strong>
+    </div>
+  `).join("");
+
+  inspectorAttachments.innerHTML = attachmentSlots.map((slot) => {
+    const pool = attachments.filter((attachment) => {
+      return attachment.slot === slot && attachment.kills <= kills && isAttachmentEligible(attachment, weapon);
+    });
+    const names = pool.map((attachment) => attachment.name).slice(0, 7).join(", ");
+    const remaining = Math.max(0, pool.length - 7);
+
+    return `
+      <article class="attachment-preview">
+        <strong>${slot} (${pool.length})</strong>
+        <p>${names}${remaining ? `, +${remaining} more` : ""}</p>
+      </article>
+    `;
+  }).join("");
+
+  loadLiveWeaponStats(weapon);
+}
+
+function getWeaponClasses(weapon) {
+  return Object.entries(primaryByClass)
+    .filter(([, categories]) => categories.includes(weapon.category))
+    .map(([className]) => className);
+}
+
+async function loadLiveWeaponStats(weapon) {
+  const requestId = ++statsRequestId;
+  inspectorLiveStats.innerHTML = `<div class="live-stat-message">Loading live wiki stats...</div>`;
+
+  try {
+    const [mainText, advancedText] = await Promise.all([
+      fetchWikiText(weapon.name),
+      fetchWikiText(`${weapon.name}/Advanced Stats`)
+    ]);
+
+    if (requestId !== statsRequestId) {
+      return;
+    }
+
+    const stats = extractWeaponStats(mainText, advancedText);
+    renderLiveStats(stats, weapon);
+  } catch {
+    if (requestId !== statsRequestId) {
+      return;
+    }
+
+    inspectorLiveStats.innerHTML = `
+      <div class="live-stat-message">
+        Live stats could not be loaded here. Use the Wiki Stats button for damage, recoil, penetration, and advanced numbers.
+      </div>
+    `;
+  }
+}
+
+async function fetchWikiText(pageTitle) {
+  const url = `https://roblox-phantom-forces.fandom.com/api.php?action=parse&page=${encodeURIComponent(pageTitle)}&prop=text&format=json&origin=*`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Wiki request failed");
+  }
+
+  const data = await response.json();
+  const html = data?.parse?.text?.["*"];
+
+  if (!html) {
+    throw new Error("Wiki page missing");
+  }
+
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  return doc.body.textContent.replace(/\s+/g, " ").trim();
+}
+
+function extractWeaponStats(mainText, advancedText) {
+  return [
+    ["Damage", matchStat(mainText, /Damage\s+([0-9.]+(?:→|->|-)[0-9.]+)/i)],
+    ["Range", matchStat(mainText, /Range\s+([0-9,]+(?:→|->|-)[0-9,]+(?:\s*studs)?)/i)],
+    ["Fire Rate", matchStat(mainText, /Fire Rate\s+(.+?RPM(?:\s+[A-Z0-9 &|]+)?)(?:\s+The|\s+Contents|\s*$)/i)],
+    ["Magazine", matchStat(mainText, /Magazine\s+(?:Reserve\s+)?([0-9]+\s*\+\s*[0-9]+|[0-9]+)/i)],
+    ["Reserve", matchStat(mainText, /Reserve\s+([0-9]+)/i)],
+    ["Ammo Type", matchStat(mainText, /Ammo Type\s+([A-Za-z0-9 .×x/-]+?)(?:\s+Fire Modes|\s+The|\s*$)/i)],
+    ["Min TTK", matchStat(advancedText, /Minimum TTK .*?([0-9.]+\s*s)/i)],
+    ["Muzzle Velocity", matchStat(advancedText, /Muzzle Velocity\s+([0-9,]+\s*studs\/s)/i) || matchStat(mainText, /Velocity\s+([0-9,]+\s*studs\/sec)/i)],
+    ["Penetration", matchStat(advancedText, /Penetration Depth\s+([0-9.]+\s*studs)/i)],
+    ["Suppression", matchStat(advancedText, /Suppression\s+([0-9.]+)/i)],
+    ["Hip Accuracy", matchStat(advancedText, /HIP ACCURACY\s+([0-9.]+)/i)],
+    ["Sight Accuracy", matchStat(advancedText, /SIGHT ACCURACY\s+([0-9.]+)/i)],
+    ["Min Camera Kick", matchStat(advancedText, /Min Camera Kick\s+(\([^)]+\))/i)],
+    ["Max Camera Kick", matchStat(advancedText, /Max Camera Kick\s+(\([^)]+\))/i)],
+    ["Min Recoil Disp.", matchStat(advancedText, /Min Recoil Displacement\s+(\([^)]+\))/i)],
+    ["Max Recoil Disp.", matchStat(advancedText, /Max Recoil Displacement\s+(\([^)]+\))/i)],
+    ["Min Recoil Rot.", matchStat(advancedText, /Min Recoil Rotation\s+(\([^)]+\))/i)],
+    ["Max Recoil Rot.", matchStat(advancedText, /Max Recoil Rotation\s+(\([^)]+\))/i)],
+    ["Reload", matchStat(advancedText, /Reload Time\s+([0-9.]+\s*seconds)/i)],
+    ["Empty Reload", matchStat(advancedText, /Empty Reload Time\s+([0-9.]+\s*seconds)/i)],
+    ["Walk Speed", matchStat(advancedText, /Weapon Walk Speed\s+([0-9.]+\s*stud\/s)/i)],
+    ["Aim Walk Speed", matchStat(advancedText, /Aiming Walk Speed\s+([0-9.]+\s*stud\/s)/i)]
+  ].filter(([, value]) => value);
+}
+
+function matchStat(text, pattern) {
+  const match = text.match(pattern);
+  return match ? match[1].trim() : "";
+}
+
+function renderLiveStats(stats, weapon) {
+  if (!stats.length) {
+    inspectorLiveStats.innerHTML = `
+      <div class="live-stat-message">
+        No live stat table was found for this weapon. Open Wiki Stats for the full page.
+      </div>
+    `;
+    return;
+  }
+
+  const recoilLabels = new Set([
+    "Min Camera Kick",
+    "Max Camera Kick",
+    "Min Recoil Disp.",
+    "Max Recoil Disp.",
+    "Min Recoil Rot.",
+    "Max Recoil Rot."
+  ]);
+  const recoilStats = stats.filter(([label]) => recoilLabels.has(label));
+  const visibleStats = stats.filter(([label]) => !recoilLabels.has(label));
+  const recoilVisual = buildRecoilVisual(recoilStats, weapon);
+
+  inspectorLiveStats.innerHTML = `
+    <div class="live-stat-heading">
+      <h4>Live Weapon Stats</h4>
+      <span>From Phantom Forces Wiki</span>
+    </div>
+    ${recoilVisual}
+    <div class="live-stat-grid">
+      ${visibleStats.map(([label, value]) => `
+        <div class="live-stat-tile">
+          <span>${label}</span>
+          <strong title="${value}">${value}</strong>
+        </div>
+      `).join("")}
+    </div>
+  `;
+  inspectorWiki.href = wikiUrl(weapon.name, true);
+}
+
+function buildRecoilVisual(recoilStats, weapon) {
+  const values = Object.fromEntries(recoilStats);
+  const minCamera = parseVector(values["Min Camera Kick"]);
+  const maxCamera = parseVector(values["Max Camera Kick"]);
+  const minRotation = parseVector(values["Min Recoil Rot."]);
+  const maxRotation = parseVector(values["Max Recoil Rot."]);
+  const minDisplacement = parseVector(values["Min Recoil Disp."]);
+  const maxDisplacement = parseVector(values["Max Recoil Disp."]);
+
+  if (!minCamera.length && !maxCamera.length && !minRotation.length && !maxRotation.length) {
+    return `
+      <div class="recoil-visual">
+        <div class="live-stat-message">No recoil pattern values were found for this weapon.</div>
+      </div>
+    `;
+  }
+
+  const points = generateRecoilPoints(weapon, { minCamera, maxCamera, minRotation, maxRotation, minDisplacement, maxDisplacement }, 22, 320, 220);
+  const pattern = recoilSvgPattern(points, 320, 220, false);
+
+  return `
+    <div class="recoil-visual">
+      <div class="recoil-image" role="img" aria-label="${weapon.name} generated recoil pattern">
+        ${pattern}
+      </div>
+      <div class="recoil-details">
+        <h5>Generated recoil pattern</h5>
+        <p>This image is generated from the wiki's camera kick, recoil rotation, and displacement values for the inspected weapon. It is a readable approximation, not a frame-perfect in-game spray recording.</p>
+      </div>
+    </div>
+  `;
+}
+
+function buildCompactRecoilPreview(weapon) {
+  const profile = fallbackRecoilProfile(weapon);
+  const points = generateRecoilPoints(weapon, profile, 14, 180, 96);
+
+  return `
+    <div class="weapon-recoil-thumb" aria-label="${weapon.name} recoil preview">
+      ${recoilSvgPattern(points, 180, 96, true)}
+    </div>
+  `;
+}
+
+function generateRecoilPoints(weapon, profile, count, width, height) {
+  const seed = normalize(weapon.name).split("").reduce((total, char) => total + char.charCodeAt(0), 0);
+  const points = [];
+  let x = width / 2;
+  let y = height - 20;
+
+  for (let index = 0; index < count; index += 1) {
+    const t = count === 1 ? 0 : index / (count - 1);
+    const camera = interpolateVector(profile.minCamera, profile.maxCamera, t);
+    const rotation = interpolateVector(profile.minRotation, profile.maxRotation, t);
+    const displacement = interpolateVector(profile.minDisplacement, profile.maxDisplacement, t);
+    const sway = Math.sin(seed + index * 1.7) * (width / 64);
+    const drift = (rotation[1] || camera[1] || displacement[0] || 0) * (width / 34);
+    const climb = Math.abs(rotation[0] || camera[0] || displacement[1] || 0) * (height / 18) + height / 55;
+
+    x += drift + sway;
+    y -= climb;
+    points.push([clamp(x, 10, width - 10), clamp(y, 10, height - 12)]);
+  }
+
+  return points;
+}
+
+function recoilSvgPattern(points, width, height, compact) {
+  const path = points.map(([pointX, pointY], index) => `${index ? "L" : "M"} ${pointX.toFixed(1)} ${pointY.toFixed(1)}`).join(" ");
+  const dots = points.map(([pointX, pointY], index) => `
+    <circle cx="${pointX.toFixed(1)}" cy="${pointY.toFixed(1)}" r="${compact ? 2 : index === 0 ? 4 : 3}" fill="${index === points.length - 1 ? "#ff9b92" : "#e5b64b"}" />
+  `).join("");
+  const grid = compact
+    ? `M45 10 V86 M90 10 V86 M135 10 V86 M10 32 H170 M10 56 H170 M10 80 H170`
+    : `M40 20 V200 M80 20 V200 M120 20 V200 M160 20 V200 M200 20 V200 M240 20 V200 M280 20 V200 M20 60 H300 M20 100 H300 M20 140 H300 M20 180 H300`;
+  const axis = compact
+    ? `M90 86 V10 M10 82 H170`
+    : `M160 200 V20 M20 190 H300`;
+
+  return `
+    <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="${width}" height="${height}" fill="#0b0f15" />
+      <path d="${grid}" stroke="#303947" stroke-width="1" opacity="0.58" />
+      <path d="${axis}" stroke="#aab6c5" stroke-width="${compact ? 1 : 1.4}" opacity="0.5" />
+      <path d="${path}" fill="none" stroke="#63b3ed" stroke-width="${compact ? 2.4 : 3.5}" stroke-linecap="round" stroke-linejoin="round" />
+      ${dots}
+    </svg>
+  `;
+}
+
+function fallbackRecoilProfile(weapon) {
+  const categoryProfiles = {
+    "Assault Rifle": [[0.55, -0.1, 0], [1.1, 0.28, 0], [0.2, -0.2, 0], [0.7, 0.4, 0]],
+    "PDW": [[0.45, -0.18, 0], [0.9, 0.34, 0], [0.3, -0.35, 0], [0.8, 0.5, 0]],
+    "LMG": [[0.75, -0.25, 0], [1.35, 0.42, 0], [0.3, -0.25, 0], [1.0, 0.6, 0]],
+    "Sniper Rifle": [[1.35, -0.1, 0], [2.2, 0.22, 0], [0.2, -0.12, 0], [0.7, 0.2, 0]],
+    "Carbine": [[0.5, -0.14, 0], [1.0, 0.3, 0], [0.25, -0.25, 0], [0.75, 0.4, 0]],
+    "DMR": [[0.8, -0.12, 0], [1.45, 0.24, 0], [0.2, -0.18, 0], [0.8, 0.32, 0]],
+    "Battle Rifle": [[0.95, -0.22, 0], [1.65, 0.38, 0], [0.3, -0.25, 0], [0.95, 0.48, 0]],
+    "Shotgun": [[1.15, -0.16, 0], [1.9, 0.28, 0], [0.25, -0.2, 0], [0.8, 0.38, 0]],
+    "Pistol": [[0.65, -0.18, 0], [1.15, 0.28, 0], [0.25, -0.25, 0], [0.75, 0.36, 0]],
+    "Machine Pistol": [[0.55, -0.3, 0], [1.15, 0.55, 0], [0.35, -0.4, 0], [1.0, 0.7, 0]],
+    "Revolver": [[1.05, -0.12, 0], [1.9, 0.24, 0], [0.2, -0.16, 0], [0.8, 0.3, 0]],
+    "Other": [[0.9, -0.16, 0], [1.6, 0.32, 0], [0.25, -0.22, 0], [0.85, 0.42, 0]]
+  };
+  const [minCamera, maxCamera, minRotation, maxRotation] = categoryProfiles[weapon.category] || categoryProfiles.Other;
+
+  return {
+    minCamera,
+    maxCamera,
+    minRotation,
+    maxRotation,
+    minDisplacement: [0.08, 0.08, 0],
+    maxDisplacement: [0.22, 0.28, 0]
+  };
+}
+
+function parseVector(value = "") {
+  const matches = value.match(/-?\d+(?:\.\d+)?/g);
+  return matches ? matches.map(Number) : [];
+}
+
+function interpolateVector(minimum, maximum, t) {
+  const length = Math.max(minimum.length, maximum.length);
+
+  return Array.from({ length }, (_, index) => {
+    const start = minimum[index] ?? maximum[index] ?? 0;
+    const end = maximum[index] ?? minimum[index] ?? 0;
+    return start + (end - start) * t;
+  });
+}
+
+function clamp(value, minimum, maximum) {
+  return Math.min(maximum, Math.max(minimum, value));
+}
+
+function wikiUrl(name, advanced = false) {
+  const title = advanced ? `${name}/Advanced Stats` : name;
+  return `https://roblox-phantom-forces.fandom.com/wiki/${encodeURIComponent(title).replace(/%2F/g, "/").replace(/%20/g, "_")}`;
 }
 
 const challenges = [
@@ -694,13 +1031,23 @@ navButtons.forEach((button) => {
   button.addEventListener("click", () => showPage(button.dataset.page));
 });
 weaponBrowser.addEventListener("click", (event) => {
+  const inspectButton = event.target.closest("[data-inspect-kind]");
   const button = event.target.closest("[data-select-kind]");
+
+  if (inspectButton) {
+    inspectWeapon(inspectButton.dataset.inspectKind, inspectButton.dataset.inspectWeapon);
+    return;
+  }
 
   if (button) {
     selectWeapon(button.dataset.selectKind, button.dataset.selectWeapon);
   }
 });
+useInspectedWeaponButton.addEventListener("click", () => {
+  selectWeapon(inspectedWeapon.kind, inspectedWeapon.weapon.name);
+});
 
 setupWeaponBrowser();
+renderInspector();
 rollChallenge();
 randomize();

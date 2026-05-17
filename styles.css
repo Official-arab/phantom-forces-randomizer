@@ -331,7 +331,8 @@ button:hover {
   margin: 16px 0;
 }
 
-.selection-strip div {
+.selection-strip div,
+.weapon-inspector {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(13, 17, 23, 0.52);
@@ -352,6 +353,180 @@ button:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.weapon-inspector {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.weapon-inspector h3 {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(1.7rem, 4vw, 3.4rem);
+  line-height: 0.95;
+}
+
+.weapon-inspector p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.inspector-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.inspector-actions a {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-strong);
+  color: var(--text);
+  font-weight: 900;
+  padding: 10px 14px;
+  text-decoration: none;
+}
+
+.inspector-stats,
+.inspector-live-stats,
+.inspector-attachments {
+  grid-column: 1 / -1;
+}
+
+.inspector-stats,
+.live-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.stat-tile,
+.live-stat-tile {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(21, 27, 35, 0.66);
+  padding: 12px;
+}
+
+.stat-tile span,
+.live-stat-tile span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.stat-tile strong,
+.live-stat-tile strong {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.live-stat-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px 0 10px;
+}
+
+.live-stat-heading h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.live-stat-heading span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.live-stat-message {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.52);
+  color: var(--muted);
+  padding: 12px;
+  font-weight: 800;
+}
+
+.recoil-visual {
+  display: grid;
+  grid-template-columns: minmax(240px, 360px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+.recoil-image {
+  min-height: 230px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.62);
+  overflow: hidden;
+}
+
+.recoil-image svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.recoil-details {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(21, 27, 35, 0.56);
+  padding: 14px;
+}
+
+.recoil-details h5 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+
+.recoil-details p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.inspector-attachments {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.attachment-preview {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(21, 27, 35, 0.5);
+  padding: 12px;
+}
+
+.attachment-preview strong {
+  display: block;
+  color: var(--accent-strong);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.attachment-preview p {
+  margin-top: 6px;
+  color: var(--text);
+  font-size: 0.86rem;
 }
 
 .weapon-browser {
@@ -378,6 +553,21 @@ button:hover {
   padding: 12px;
 }
 
+.weapon-recoil-thumb {
+  height: 96px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  background: #0b0f15;
+  overflow: hidden;
+}
+
+.weapon-recoil-thumb svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .weapon-select-card strong {
   display: block;
   overflow: hidden;
@@ -396,6 +586,12 @@ button:hover {
   width: 100%;
   margin-top: 10px;
   padding: 9px 10px;
+}
+
+.weapon-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 .challenge-card {
@@ -641,7 +837,9 @@ button:hover {
   .results,
   .stats-panel,
   .attachment-grid,
-  .selection-strip {
+  .selection-strip,
+  .weapon-inspector,
+  .recoil-visual {
     grid-template-columns: 1fr;
   }
 
